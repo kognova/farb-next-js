@@ -10,14 +10,12 @@ import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {
-    console.log('AuthController instantiated');
-  }
+  constructor(private authService: AuthService) {}
 
   @Post('login')
   login(
     @Body() body: { username: string; password: string },
-    @Session() session: any,
+    @Session() session: Record<string, any>,
   ) {
     console.log('Login attempt:', body);
     try {
@@ -38,8 +36,12 @@ export class AuthController {
   }
 
   @Post('logout')
-  logout(@Session() session: any) {
-    session.destroy();
+  logout(@Session() session: Record<string, any>) {
+    session.destroy((err) => {
+      if (err) {
+        console.error('Logout error:', err);
+      }
+    });
     return { message: 'Logged out successfully' };
   }
 }
