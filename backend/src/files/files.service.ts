@@ -1,13 +1,34 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import { LlamaParseReader } from 'llamaindex';
+import 'dotenv/config';
 
 @Injectable()
 export class FilesService {
+  private readonly logger = new Logger(FilesService.name);
   private uploadRoot = path.join(process.cwd(), 'uploads');
+  private llamaParser: LlamaParseReader;
 
   constructor() {
     this.ensureUploadsFolderExists();
+    this.llamaParser = new LlamaParseReader({
+      apiKey: process.env.LLAMA_CLOUD_API_KEY,
+      resultType: 'markdown',
+      premiumMode: true,
+      parsingInstruction: `The provided document is a legal invoice. Each page contains detailed billing information, including services rendered, hourly rates, time spent, and amounts due. 
+    - Extract each line item, including the **service description**, **rate**, **quantity (hours)**, and **line total**.
+    - Capture the **invoice number**, **issue date**, **due date**, and **client information** from the header section.
+    - Differentiate between **attorney services** and **research services**, associating them with specific individuals (e.g., attorneys or research assistants).
+    - Ensure the final **total amount due**, any **paid amounts**, and status (e.g., "FREE OF CHARGE") are captured and structured.
+    - Include any free services or discounts provided.
+    - Please extract the table with columns: Description, Rate, Hours, and Line Total, and format the output in a consistent Markdown table.
+    Use this table structure:
+
+    | Description | Rate  | Qty  | Line Total |
+    |-------------|-------|------|------------|
+    | [Service]   | $X.XX | X.XX | $X.XX      |`,
+    });
   }
 
   private ensureUploadsFolderExists() {
@@ -26,12 +47,9 @@ export class FilesService {
 
   async handleFileUpload(file: Express.Multer.File, username: string) {
     const userPath = this.getUserUploadPath(username);
-
-    // Move the file to the user's directory with the original filename
     const oldPath = file.path;
     const newPath = path.join(userPath, file.originalname);
     await fs.move(oldPath, newPath, { overwrite: true });
-
     return {
       message: 'File uploaded successfully',
       filename: file.originalname,
@@ -60,10 +78,27 @@ export class FilesService {
     filename: string,
     username: string,
   ): Promise<string> {
+    this.logger.log(`Extracting text from ${filename} for user ${username}`);
     const filePath = await this.getFile(filename, username);
-    const dataBuffer = fs.readFileSync(filePath);
-    const pdfData = await require('pdf-parse')(dataBuffer);
-    return pdfData.text;
+    try {
+      const documents = await this.llamaParser.loadData(filePath);
+      this.logger.log(
+        `Extracted ${documents.length} documents from ${filename}`,
+      );
+      this.logger.debug(
+        `First document content: ${JSON.stringify(documents[0])}`,
+      );
+      if (documents.length === 0) {
+        throw new Error('No text extracted from the document');
+      }
+      return documents.map((doc) => doc.text).join('\n\n');
+    } catch (error) {
+      this.logger.error(`Error extracting text from ${filename}:`, error);
+      throw new HttpException(
+        `Error extracting text from PDF: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async getWhitePaperText(): Promise<string> {

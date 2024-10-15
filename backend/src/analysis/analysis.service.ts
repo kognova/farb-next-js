@@ -19,6 +19,7 @@ export class AnalysisService {
   async analyzeFarb(
     letterText: string,
     invoiceText: string,
+    amendmentText: string | null,
     systemPrompt: string,
   ): Promise<string> {
     try {
@@ -30,7 +31,7 @@ export class AnalysisService {
         messages: [
           {
             role: 'user',
-            content: `Analyze this engagement letter and invoice based on FARB principles:
+            content: `Analyze these documents based on FARB principles:
 
 Engagement Letter:
 ${letterText}
@@ -38,6 +39,14 @@ ${letterText}
 Invoice:
 ${invoiceText}
 
+${
+  amendmentText
+    ? `Amendment:
+${amendmentText}
+
+`
+    : ''
+}
 Provide a detailed analysis focusing on:
 1. Fairness of charges
 2. Accuracy of billing details

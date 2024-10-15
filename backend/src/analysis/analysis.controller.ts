@@ -18,7 +18,12 @@ export class AnalysisController {
 
   @Post()
   async analyze(
-    @Body() body: { letterFilename: string; invoiceFilename: string },
+    @Body()
+    body: {
+      letterFilename: string;
+      invoiceFilename: string;
+      amendmentFilename?: string;
+    },
     @Session() session: any,
   ) {
     if (!session.user) {
@@ -35,11 +40,18 @@ export class AnalysisController {
         body.invoiceFilename,
         username,
       );
+      const amendmentText = body.amendmentFilename
+        ? await this.filesService.extractTextFromPdf(
+            body.amendmentFilename,
+            username,
+          )
+        : null;
       const systemPrompt = await this.filesService.getWhitePaperText();
 
       const analysisResult = await this.analysisService.analyzeFarb(
         letterText,
         invoiceText,
+        amendmentText,
         systemPrompt,
       );
       return { analysis: analysisResult };
