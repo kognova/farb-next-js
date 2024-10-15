@@ -115,8 +115,8 @@ ${whitepaperContent}
 Please provide a detailed analysis of the invoice, considering the terms set in the engagement letter. Focus on:
 1. Fairness of the charges
 2. Accuracy of the billing details
-3. How well the descriptions reflect the work done
-4. Overall billing integrity
+3. How well the descriptions reflect the work done 
+4. Billing integrity
 
 Highlight any discrepancies or areas of concern, and provide recommendations for the client. Be thorough but concise in your analysis.`;
   }

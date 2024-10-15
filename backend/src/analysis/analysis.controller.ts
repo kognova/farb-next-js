@@ -6,7 +6,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { AnalysisService } from './analysis.service';
+import { AnalysisService, SuspiciousItem } from './analysis.service';
 import { FilesService } from '../files/files.service';
 
 @Controller('analysis')
@@ -20,9 +20,9 @@ export class AnalysisController {
   async analyze(
     @Body()
     body: {
-      letterFilename: string;
-      invoiceFilename: string;
-      amendmentFilename?: string;
+      letterText: string;
+      invoiceText: string;
+      amendmentText?: string;
     },
     @Session() session: any,
   ) {
@@ -31,31 +31,20 @@ export class AnalysisController {
     }
 
     try {
-      const username = session.user.username;
-      const letterText = await this.filesService.extractTextFromPdf(
-        body.letterFilename,
-        username,
-      );
-      const invoiceText = await this.filesService.extractTextFromPdf(
-        body.invoiceFilename,
-        username,
-      );
-      const amendmentText = body.amendmentFilename
-        ? await this.filesService.extractTextFromPdf(
-            body.amendmentFilename,
-            username,
-          )
-        : null;
       const systemPrompt = await this.filesService.getWhitePaperText();
 
-      const analysisResult = await this.analysisService.analyzeFarb(
-        letterText,
-        invoiceText,
-        amendmentText,
-        systemPrompt,
-      );
-      return { analysis: analysisResult };
+      console.log(`Received invoice text length: ${body.invoiceText.length}`);
+
+      const { analysis, suspiciousItems } =
+        await this.analysisService.analyzeFarb(
+          body.letterText,
+          body.invoiceText,
+          body.amendmentText || null,
+          systemPrompt,
+        );
+      return { analysis, suspiciousItems };
     } catch (error) {
+      console.error('Error in analyze:', error);
       throw new HttpException(
         error.message,
         error.getStatus ? error.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR,
