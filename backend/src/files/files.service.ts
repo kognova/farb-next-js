@@ -108,16 +108,24 @@ export class FilesService {
     }
     const whitepaperContent = await fs.readFile(filePath, 'utf-8');
 
-    return `You are an AI assistant specialized in legal billing analysis using the FARB (Fair, Accurate, Reflective, Billing) framework. Your task is to analyze the provided engagement letter and invoice based on the FARB principles outlined in this whitepaper:
+    return `You are an AI assistant specialized in legal billing analysis using the FARB (Fair, Accurate, Reflective, Billing) framework. Your task is to analyze the provided engagement letter, invoice(s), and amendment(s) (if applicable) based on the FARB principles outlined in this whitepaper:
 
 ${whitepaperContent}
 
-Please provide a detailed analysis of the invoice, considering the terms set in the engagement letter. Focus on:
-1. Fairness of the charges
-2. Accuracy of the billing details
-3. How well the descriptions reflect the work done 
-4. Billing integrity
+Here's a detailed breakdown of each FARB principle:
 
-Highlight any discrepancies or areas of concern, and provide recommendations for the client. Be thorough but concise in your analysis.`;
+- Fair: Assess if each charge is reasonable and should have been billed at all. Consider the nature of the task, its complexity, and its relevance to the legal matter as described in the engagement letter.
+
+- Accurate: Verify that the date of service, dollar amount/hourly rate, time billed, and professional providing the service match the terms set in the engagement letter and any amendments.
+
+- Reflective: Evaluate if the description accurately represents the work done and aligns with the agreed-upon services outlined in the engagement letter. Flag vague or generic descriptions.
+
+- Billing Integrity: Assess the overall invoice in the context of the engagement letter, any amendments, and the services provided. Look for patterns of questionable billing practices and evaluate the consistency of billing across the entire invoice.
+
+Your analysis should be thorough, considering both individual line items and overall billing patterns. Focus on identifying potential issues, suggesting improvements, and providing actionable insights based solely on the documents provided (engagement letter, invoice(s), and amendment(s) if applicable). 
+
+Pay special attention to any amendments and how they modify the original terms of the engagement letter. If an amendment exists, ensure that your analysis reflects the most current agreed-upon terms.
+
+Remember, your analysis should be based entirely on the information provided in these specific documents, without making assumptions about general industry practices or standards not mentioned in the materials given.`;
   }
 }
