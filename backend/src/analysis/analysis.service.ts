@@ -7,6 +7,7 @@ interface ContentBlock {
 }
 
 export interface SuspiciousItem {
+  itemNumber: string;
   description: string;
   name: string;
   rate: string;
@@ -119,46 +120,42 @@ Provide a detailed and comprehensive analysis with the following structure:
 
 9. FINANCIAL IMPACT ANALYSIS:
    - Estimate total potential overcharges
-   - Break down overcharges by category (e.g., excessive increments, vague entries, inappropriate task delegation)
-   - Provide potential savings if all recommendations are implemented
-   - Suggest a negotiation strategy for Michael to use in discussions with the law firm
+   - Break down overcharges by category (e.g., excessive time, improper staffing, etc.)
+   - Calculate potential savings from implementing recommendations
+   - Provide a range of potential outcomes (best case, worst case, most likely)
 
 10. FARB RATING:
-    - Provide an overall FARB rating (Excellent, Good, Fair, Poor)
-    - Include subscores for each FARB principle (Fair, Accurate, Reflective, Billing Integrity) on a scale of 1-10
-    - Explain the rationale for each score
-    - Clearly state whether the invoice(s) are "Passable" or "Require Further Investigation" under FARB365 standards
-    - If "Require Further Investigation", specify which areas need immediate attention
-    - Recommend specific areas for the law firm to improve their FARB rating
-    - Provide a clear next step for the user based on the rating:
-      * For Excellent/Good ratings: Suggest any minor improvements or state that no immediate action is required
-      * For Fair/Poor ratings: Advise a deeper review of flagged line items and specify priority areas
-    Ensure the next step is clearly labeled with "Clear next step for the user:" followed by the recommendation.
+    - Assign a FARB rating (1-10) based on the overall fairness, accuracy, reflectiveness, and billing integrity
+    - Explain the rationale behind the rating
+    - Compare to industry benchmarks if available
 
 11. ANALYSIS LIMITATIONS AND NEXT STEPS:
-    - Identify any areas where additional information or clarification is needed
-    - List any limitations due to missing information or unusual circumstances
-    - Suggest specific follow-up questions for Michael to ask the client or law firm
-    - Recommend areas where deeper expert analysis might be beneficial
+    - Acknowledge any limitations in the analysis due to incomplete information
+    - Suggest additional documents or information that could enhance the analysis
+    - Recommend next steps for Michael to take based on this analysis
 
 12. CONCLUSION:
-    Provide a comprehensive conclusion summarizing the most critical findings and their potential impact on the client. Include a clear, prioritized list of next steps for Michael to take, including key discussion points for meetings with the client and law firm. Emphasize how addressing the identified issues can lead to improved billing practices, cost savings, and a stronger attorney-client relationship. Conclude with a statement on how this analysis supports the overall goals of the FARB365 process in ensuring fair, accurate, reflective, and integral billing practices. Ensure this section is clearly labeled as "CONCLUSION:" and contains substantial content.
+    - Summarize the most critical findings and their potential impact
+    - Reiterate the top 3-5 priorities for Michael to address
+    - Provide a final assessment of the overall billing practices
 
-After the analysis, on a new line, write "SUSPICIOUS ITEMS:". For each suspicious item, provide the following details on a single line, separated by pipes (|):
-1. Description (exact text from the document)
-2. Name (if applicable)
-3. Rate (if applicable)
-4. Quantity (if applicable)
-5. Line Total/Total Cost
-6. Reason for being flagged as suspicious
-7. Confidence level (High, Medium, Low)
+Ensure each section starts with its title in all caps, followed by a colon. Provide detailed explanations and specific examples where possible. Your analysis should be based entirely on the information provided in these specific documents, without making assumptions about general industry practices or standards not mentioned in the materials given.
+
+SUSPICIOUS ITEMS:
+After the analysis, identify and list the top 15-20 most suspicious line items from the invoice, in the order they appear in the document. If there are fewer than 15 suspicious items, list all of them. For each suspicious item, provide the following details on a single line, separated by pipes (|):
+1. Item number (as it appears in the invoice)
+2. Description (exact text from the document)
+3. Name (if applicable)
+4. Rate (if applicable)
+5. Quantity (if applicable)
+6. Line Total/Total Cost
+7. Reason for being flagged as suspicious
+8. Confidence level (High, Medium, Low)
 
 Format each item as:
-"Description | Name | Rate | Quantity | Total Cost | Reason | Confidence"
+"Item # | Description | Name | Rate | Quantity | Total Cost | Reason | Confidence"
 
-If any field is not applicable or not available, use "N/A". Only include items that are genuinely suspicious based on the FARB principles and the provided documents. If there are no suspicious items, write "None found." after "SUSPICIOUS ITEMS:".
-
-Ensure each section starts with its title in all caps, followed by a colon. Provide detailed explanations and specific examples where possible. Your analysis should be based entirely on the information provided in these specific documents, without making assumptions about general industry practices or standards not mentioned in the materials given.`,
+If any field is not applicable or not available, use "N/A". Only include items that are genuinely suspicious based on the FARB principles and the provided documents. If there are no suspicious items, write "None found." after "SUSPICIOUS ITEMS:".`,
           },
         ],
       });
@@ -215,6 +212,7 @@ Ensure each section starts with its title in all caps, followed by a colon. Prov
               .filter((item) => item.trim() !== '')
               .map((item) => {
                 const [
+                  itemNumber,
                   description,
                   name,
                   rate,
@@ -223,13 +221,21 @@ Ensure each section starts with its title in all caps, followed by a colon. Prov
                   reason,
                   confidence,
                 ] = item.split('|').map((s) => s.trim());
-                if (!description || !totalCost || !reason || !confidence) {
+                if (
+                  !itemNumber ||
+                  !description ||
+                  !name ||
+                  !totalCost ||
+                  !reason ||
+                  !confidence
+                ) {
                   console.warn(
                     `Potentially invalid suspicious item format: ${item}`,
                   );
                   return null;
                 }
                 return {
+                  itemNumber,
                   description,
                   name,
                   rate,
