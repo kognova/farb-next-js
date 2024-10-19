@@ -1,25 +1,24 @@
 {
-  "dependencies": {
-    "@anthropic-ai/sdk": "^0.29.0",
-    "@radix-ui/react-alert-dialog": "^1.1.2",
-    "@radix-ui/react-collapsible": "^1.0.0",
-    "@radix-ui/react-label": "^2.1.0",
-    "@radix-ui/react-progress": "^1.1.0",
-    "@radix-ui/react-scroll-area": "^1.2.0",
-    "@radix-ui/react-slot": "^1.1.0",
-    "@radix-ui/react-tabs": "^1.1.1",
-    "axios": "^1.7.7",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.1",
-    "html2canvas": "^1.4.1",
-    "jspdf": "^2.5.2",
-    "lucide-react": "^0.452.0",
-    "next": "14.2.15",
-    "pdfjs-dist": "^3.11.174",
-    "react": "^18",
-    "react-dom": "^18",
-    "react-pdf": "^7.7.3",
-    "tailwind-merge": "^2.5.3",
-    "tailwindcss-animate": "^1.0.7"
-  }
+    "name": "farb-next-js-monorepo",
+    "version": "1.0.0",
+    "private": true,
+    "workspaces": [
+        "frontend",
+        "backend"
+    ],
+    "scripts": {
+        "dev:web": "yarn workspace frontend dev",
+        "dev:api": "yarn workspace backend start:dev",
+        "dev": "concurrently \"yarn dev:web\" \"yarn dev:api\"",
+        "build:web": "yarn workspace frontend build",
+        "build:api": "yarn workspace backend build",
+        "build": "yarn build:web && yarn build:api",
+        "start:web": "yarn workspace frontend start",
+        "start:api": "yarn workspace backend start",
+        "start": "concurrently \"start:web\" \"yarn start:api\""
+    },
+    "packageManager": "yarn@4.5.1",
+    "devDependencies": {
+        "concurrently": "^9.0.1"
+    }
 }

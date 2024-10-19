@@ -7,6 +7,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { Get } from '@nestjs/common';
 
 @Controller('auth')
 export class AuthController {
@@ -32,6 +33,15 @@ export class AuthController {
         'Internal server error',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    }
+  }
+
+  @Get('status')
+  status(@Session() session: Record<string, any>) {
+    if (session.user) {
+      return { isLoggedIn: true, user: session.user };
+    } else {
+      return { isLoggedIn: false };
     }
   }
 

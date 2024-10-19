@@ -9,17 +9,19 @@ async function bootstrap() {
 
   app.use(
     session({
-      secret: process.env.SESSION_SECRET || 'my-secret',
+      secret: process.env.SESSION_SECRET ?? 'my-secret',
       resave: false,
       saveUninitialized: false,
     }),
   );
 
   app.enableCors({
-    origin: 'http://localhost:3000', // Changed from 3001 to 3000
+    origin: '*',
     credentials: true,
   });
 
-  await app.listen(3001);
+  await app.listen(process.env.PORT ?? 3001, process.env.NEST_HOST);
+
+  console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();
