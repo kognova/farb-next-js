@@ -16,7 +16,7 @@ RUN yarn build
 FROM node:21-slim
 
 ENV PORT=8080
-ENV NEST_HOST=127.0.0.1
+ENV NEST_HOST=0.0.0.0
 
 WORKDIR /app
 
