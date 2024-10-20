@@ -3,11 +3,12 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import { LlamaParseReader } from 'llamaindex';
 import 'dotenv/config';
+import { STATIC_DIR } from '@/static';
 
 @Injectable()
 export class FilesService {
   private readonly logger = new Logger(FilesService.name);
-  private uploadRoot = path.join(process.cwd(), 'uploads');
+  private uploadRoot = path.join(STATIC_DIR, 'uploads');
   private llamaParser: LlamaParseReader;
 
   constructor() {
@@ -91,6 +92,8 @@ export class FilesService {
       if (documents.length === 0) {
         throw new Error('No text extracted from the document');
       }
+      // Delete the uploaded file after extracting text
+      await fs.unlink(filePath);
       return documents.map((doc) => doc.text).join('\n\n');
     } catch (error) {
       this.logger.error(`Error extracting text from ${filename}:`, error);
@@ -102,7 +105,7 @@ export class FilesService {
   }
 
   async getWhitePaperText(): Promise<string> {
-    const filePath = path.join(process.cwd(), 'whitepaper.md');
+    const filePath = path.join(__dirname, '../../whitepaper.md');
     if (!(await fs.pathExists(filePath))) {
       throw new HttpException('Whitepaper not found', HttpStatus.NOT_FOUND);
     }

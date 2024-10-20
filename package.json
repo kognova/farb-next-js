@@ -13,9 +13,7 @@
         "build:web": "yarn workspace frontend build",
         "build:api": "yarn workspace backend build",
         "build": "yarn build:web && yarn build:api",
-        "start:web": "yarn workspace frontend start",
-        "start:api": "yarn workspace backend start",
-        "start": "concurrently \"start:web\" \"yarn start:api\""
+        "start": "yarn workspace backend start"
     },
     "packageManager": "yarn@4.5.1",
     "devDependencies": {
