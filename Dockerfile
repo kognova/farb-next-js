@@ -15,6 +15,7 @@ RUN yarn build
 # Use a smaller Node.js image for the final stage
 FROM node:21-slim
 
+ENV NODE_ENV=production
 ENV PORT=8080
 ENV NEST_HOST=0.0.0.0
 

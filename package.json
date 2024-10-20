@@ -10,9 +10,7 @@
         "dev:web": "yarn workspace frontend dev",
         "dev:api": "yarn workspace backend start:dev",
         "dev": "concurrently \"yarn dev:web\" \"yarn dev:api\"",
-        "build:web": "yarn workspace frontend build",
-        "build:api": "yarn workspace backend build",
-        "build": "yarn build:web && yarn build:api",
+        "build": "yarn workspace frontend build",
         "start": "yarn workspace backend start"
     },
     "packageManager": "yarn@4.5.1",
