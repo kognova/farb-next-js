@@ -14,6 +14,9 @@ const nextConfig = {
                         : "http://localhost:3001/:path*"
             }
         ];
+    },
+    experimental: {
+        proxyTimeout: 240e3
     }
 };
 
