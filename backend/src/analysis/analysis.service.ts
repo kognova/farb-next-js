@@ -51,95 +51,109 @@ ${amendmentText ? `Amendment: ${amendmentText}` : ''}
 
 Provide a detailed and comprehensive analysis with the following structure:
 
+
 1. EXECUTIVE SUMMARY:
-   - Summarize key findings and major issues identified
-   - Provide key financial figures: total billed, estimated overcharges, potential savings
-   - List 3-5 immediate "Action Items" for Michael to address with the client or law firm
+  - Summarize key findings and major issues identified
+  - Provide key financial figures: total billed, total billed by resource, estimated overcharges, potential savings
+  - List 3-5 immediate "Action Items" for invoice reviewer  to address with the client or the subject law firm
+
 
 2. DOCUMENT ANALYSIS:
-   a. ENGAGEMENT LETTER ANALYSIS:
-      - Identify key terms including hourly rates, billing caps, flat rate agreements, and scope of services
-      - Flag any unusual or potentially problematic clauses
-   b. INVOICE ANALYSIS:
-      - Summarize each invoice: date, total amount, key issues
-      - Identify trends or patterns across invoices
-   c. AMENDMENT ANALYSIS (if applicable):
-      - Analyze how the amendment modifies the original engagement letter terms
-      - Assess its impact on billing practices
-   d. DOCUMENT DISCREPANCIES:
-      - Highlight inconsistencies between engagement letter, invoices, and amendment
-      - Recommend specific areas for Michael to investigate further
+  a. ENGAGEMENT LETTER ANALYSIS:
+     - Identify key terms including hourly rates, resource, billing caps, flat rate agreements, and scope of services
+     - Flag any unusual or potentially problematic clauses
+  b. INVOICE ANALYSIS:
+     - Summarize each invoice: date, total amount by resource, total invoice amount, key issues
+     - Identify trends or patterns across invoices
+  c. AMENDMENT ANALYSIS (if applicable):
+     - Analyze how the engagement letter amendment modifies the original engagement letter terms
+     - Assess its impact on billing practices
+  d. DOCUMENT DISCREPANCIES:
+     - Highlight inconsistencies between engagement letter, invoices, and amendment
+     - Recommend specific areas for invoice reviewer  to investigate further
+
 
 3. FAIRNESS OF CHARGES:
-   - Evaluate the reasonableness of the fees charged
-   - Compare similar tasks across invoices and between different attorneys
-   - Identify any excessive or unjustified charges
-   - Analyze the billing rates and time spent on tasks
-   - Provide percentage of entries flagged as potentially unfair
-   - Recommend specific charges for Michael to challenge or negotiate
+  - Evaluate the reasonableness of the fees charged
+  - Compare similar tasks across invoices and between different attorneys and non-attorney resources
+  - Identify any excessive or unjustified charges
+  - Analyze the billing rates and time spent on tasks
+  - Provide percentage of entries flagged as potentially unfair
+  - Recommend specific charges for invoice reviewer to challenge or negotiate
+
 
 4. ACCURACY OF BILLING DETAILS:
-   - Verify the mathematical accuracy of the invoice
-   - Check for any duplicate charges or billing errors
-   - Assess the clarity and specificity of the billing entries
-   - Identify any vague or ambiguous time entries
-   - Provide percentage of entries with accuracy issues and total dollar amount affected
-   - Highlight specific entries for Michael to request clarification or correction
+  - Verify the mathematical accuracy of the invoice
+  - Check for any duplicate charges or billing errors
+  - Assess the clarity and specificity of the billing entries
+  - Identify any vague or ambiguous time entries
+  - Provide percentage of entries with accuracy issues and total dollar amount affected
+  - Highlight specific entries for invoice reviewer to request clarification, correction or follow up on
+
 
 5. REFLECTIVENESS OF WORK DESCRIPTIONS:
-   - Evaluate how well the descriptions match the claimed work
-   - Identify any discrepancies between the engagement letter and the actual work performed
-   - Assess the level of detail in the work descriptions
-   - Flag any entries that lack sufficient explanation
-   - Include 2-3 direct quotes from invoices for each issue identified, with explanations
-   - Provide percentage of entries with reflectiveness issues
-   - Suggest specific entries for Michael to request more detailed descriptions
+  - Evaluate how well the descriptions match the invoiced work
+  
+  - Assess the level of detail in the work descriptions
+  - Flag any entries that lack sufficient explanation
+  - Include 2-3 direct quotes from invoices for each issue identified, with explanations
+  - Provide percentage of entries with reflectiveness issues
+  - Suggest specific entries for invoice reviewer to request more detailed descriptions
+
 
 6. BILLING INTEGRITY:
-   - Analyze the overall consistency of the billing practices
-   - Identify any patterns of questionable billing
-   - Evaluate compliance with ethical billing standards
-   - Assess any potential conflicts of interest
-   - Analyze trends in billing practices over time
-   - Provide percentage of entries raising integrity concerns
-   - Recommend specific billing practices for Michael to address with the law firm
+  - Analyze the overall consistency of the billing practices
+  - Identify any patterns of questionable billing
+  - Evaluate compliance with ethical billing standards
+  - Assess any potential conflicts of interest
+  - Analyze trends in billing practices over time
+  - Provide percentage of entries raising integrity concerns
+  - Recommend specific billing practices for invoice reviewerto address with the subject law firm
+
 
 7. CLIENT-SPECIFIC RECOMMENDATIONS:
-   - Provide tailored, actionable recommendations for addressing each major issue
-   - For each recommendation, include:
-     a) The specific problem it addresses
-     b) The potential impact on the client's bill
-     c) A step-by-step guide for Michael to implement the recommendation
-   - Prioritize recommendations based on potential financial impact and ease of implementation
+  - Provide tailored, actionable recommendations for addressing each major issue
+  - For each recommendation, include:
+    a) The specific problem it addresses
+    b) The potential impact on the client's bill
+    c) A step-by-step guide for invoice reviewer to implement the recommendation
+  - Prioritize recommendations based on potential financial impact and ease of implementation
+
 
 8. PREVENTATIVE STRATEGIES:
-   - Suggest modifications to the engagement letter to prevent future issues
-   - Propose specific billing guidelines for the client to implement with the law firm
-   - Recommend process improvements for ongoing billing management
-   - Provide a template or key points for Michael to discuss future billing expectations with the law firm
+  - Suggest modifications to the engagement letter to prevent future issues
+  - Propose specific billing guidelines for the client to implement with the subject law firm that address issues discovered in the invoices
+  - Recommend process improvements for client implementation for ongoing billing management
+  - Provide a template or key points for invoice reviewer to discuss future billing expectations with the subject law firm
+
 
 9. FINANCIAL IMPACT ANALYSIS:
-   - Estimate total potential overcharges
-   - Break down overcharges by category (e.g., excessive time, improper staffing, etc.)
-   - Calculate potential savings from implementing recommendations
-   - Provide a range of potential outcomes (best case, worst case, most likely)
+  - Estimate total potential overcharges
+  - Break down overcharges by category (e.g., excessive time, improper staffing, etc.)
+  - Calculate potential savings from implementing recommendations
+  - Provide a range of potential outcomes (best case, worst case, most likely)
+
 
 10. FARB RATING:
-    - Assign a FARB rating (1-10) based on the overall fairness, accuracy, reflectiveness, and billing integrity
-    - Explain the rationale behind the rating
-    - Compare to industry benchmarks if available
+   - Assign a FARB rating (1-10) based on the overall fairness, accuracy, reflectiveness, and billing integrity
+   - Explain the rationale behind the rating
+   - Compare to industry benchmarks if available
+
 
 11. ANALYSIS LIMITATIONS AND NEXT STEPS:
-    - Acknowledge any limitations in the analysis due to incomplete information
-    - Suggest additional documents or information that could enhance the analysis
-    - Recommend next steps for Michael to take based on this analysis
+   - Acknowledge any limitations in the analysis due to incomplete information
+   - Suggest additional documents or information that could enhance the analysis
+   - Recommend next steps for invoice reviewer to take based on this analysis
+
 
 12. CONCLUSION:
-    - Summarize the most critical findings and their potential impact
-    - Reiterate the top 3-5 priorities for Michael to address
-    - Provide a final assessment of the overall billing practices
+   - Summarize the most critical findings and their potential impact
+   - Reiterate the top 3-5 priorities for invoice reviewer to address
+   - Provide a final assessment of the overall billing practices
+
 
 Ensure each section starts with its title in all caps, followed by a colon. Provide detailed explanations and specific examples where possible. Your analysis should be based entirely on the information provided in these specific documents, without making assumptions about general industry practices or standards not mentioned in the materials given.
+
 
 SUSPICIOUS ITEMS:
 After the analysis, identify and list the top 15-20 most suspicious line items from the invoice, in the order they appear in the document. If there are fewer than 15 suspicious items, list all of them. For each suspicious item, provide the following details on a single line, separated by pipes (|):
@@ -152,8 +166,10 @@ After the analysis, identify and list the top 15-20 most suspicious line items f
 7. Reason for being flagged as suspicious
 8. Confidence level (High, Medium, Low)
 
+
 Format each item as:
 "Item # | Description | Name | Rate | Quantity | Total Cost | Reason | Confidence"
+
 
 If any field is not applicable or not available, use "N/A". Only include items that are genuinely suspicious based on the FARB principles and the provided documents. If there are no suspicious items, write "None found." after "SUSPICIOUS ITEMS:".`,
           },
