@@ -1,5 +1,8 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
+import { AIProvider } from './types';
+import { FilesService } from '../files/files.service';
 
 interface ContentBlock {
   type: string;
@@ -20,10 +23,14 @@ export interface SuspiciousItem {
 @Injectable()
 export class AnalysisService {
   private anthropic: Anthropic;
+  private openai: OpenAI;
 
-  constructor() {
+  constructor(private filesService: FilesService) {
     this.anthropic = new Anthropic({
       apiKey: process.env.ANTHROPIC_API_KEY,
+    });
+    this.openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
     });
   }
 
@@ -31,19 +38,16 @@ export class AnalysisService {
     letterText: string,
     invoiceText: string,
     amendmentText: string | null,
-    systemPrompt: string,
+    provider: AIProvider = AIProvider.ANTHROPIC,
   ): Promise<{ analysis: string; suspiciousItems: SuspiciousItem[] }> {
     try {
       console.log(`Invoice text length in prompt: ${invoiceText.length}`);
-      const message = await this.anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20240620',
-        max_tokens: 8192,
-        temperature: 0,
-        system: systemPrompt,
-        messages: [
-          {
-            role: 'user',
-            content: `Analyze these legal documents based on FARB principles:
+
+      // Get system prompt from FilesService
+      const systemPromptContent = await this.filesService.getWhitePaperText();
+
+      // Using your existing userPromptContent
+      const userPromptContent = `Analyze these legal documents based on FARB principles:
 
 Engagement Letter: ${letterText}
 Invoice: ${invoiceText}
@@ -55,7 +59,7 @@ Provide a detailed and comprehensive analysis with the following structure:
 1. EXECUTIVE SUMMARY:
   - Summarize key findings and major issues identified
   - Provide key financial figures: total billed, total billed by resource, estimated overcharges, potential savings
-  - List 3-5 immediate "Action Items" for invoice reviewer  to address with the client or the subject law firm
+  - List 3-5 immediate "Action Items" for invoice reviewer to address with the client or the subject law firm
 
 
 2. DOCUMENT ANALYSIS:
@@ -70,7 +74,7 @@ Provide a detailed and comprehensive analysis with the following structure:
      - Assess its impact on billing practices
   d. DOCUMENT DISCREPANCIES:
      - Highlight inconsistencies between engagement letter, invoices, and amendment
-     - Recommend specific areas for invoice reviewer  to investigate further
+     - Recommend specific areas for invoice reviewer to investigate further
 
 
 3. FAIRNESS OF CHARGES:
@@ -108,7 +112,7 @@ Provide a detailed and comprehensive analysis with the following structure:
   - Assess any potential conflicts of interest
   - Analyze trends in billing practices over time
   - Provide percentage of entries raising integrity concerns
-  - Recommend specific billing practices for invoice reviewerto address with the subject law firm
+  - Recommend specific billing practices for invoice reviewer to address with the subject law firm
 
 
 7. CLIENT-SPECIFIC RECOMMENDATIONS:
@@ -171,18 +175,58 @@ Format each item as:
 "Item # | Description | Name | Rate | Quantity | Total Cost | Reason | Confidence"
 
 
-If any field is not applicable or not available, use "N/A". Only include items that are genuinely suspicious based on the FARB principles and the provided documents. If there are no suspicious items, write "None found." after "SUSPICIOUS ITEMS:".`,
-          },
-        ],
-      });
+If any field is not applicable or not available, use "N/A". Only include items that are genuinely suspicious based on the FARB principles and the provided documents. If there are no suspicious items, write "None found." after "SUSPICIOUS ITEMS:".`;
 
-      const content = message.content[0] as ContentBlock;
-      if (content.type !== 'text') {
-        throw new Error('Unexpected response format from Anthropic API');
+      let content: string;
+
+      if (provider === AIProvider.ANTHROPIC) {
+        const message = await this.anthropic.messages.create({
+          model: 'claude-3-5-sonnet-20240620',
+          max_tokens: 8192,
+          temperature: 0,
+          system: systemPromptContent,
+          messages: [
+            {
+              role: 'user',
+              content: userPromptContent,
+            },
+          ],
+        });
+        content = (message.content[0] as ContentBlock).text;
+        console.log(
+          'Anthropic API Response:',
+          JSON.stringify(message, null, 2),
+        );
+      } else if (provider === AIProvider.OPENAI) {
+        const response = await this.openai.chat.completions.create({
+          model: 'o1-preview',
+          messages: [
+            {
+              role: 'user',
+              content: `${systemPromptContent}\n\n${userPromptContent}`,
+            },
+          ],
+        });
+        console.log('OpenAI API Response:', JSON.stringify(response, null, 2));
+        content = response.choices[0]?.message?.content;
+        if (!content) {
+          throw new Error('Unexpected response format from OpenAI API');
+        }
+      } else {
+        throw new Error('Unknown AI provider');
       }
 
+      // Add content logging
+      console.log('Processed Content:', {
+        fullContent: content,
+        splitContent: {
+          analysis: content.split('SUSPICIOUS ITEMS:')[0],
+          suspiciousItems: content.split('SUSPICIOUS ITEMS:')[1],
+        },
+      });
+
       const [analysisText, suspiciousItemsText] =
-        content.text.split('SUSPICIOUS ITEMS:');
+        content.split('SUSPICIOUS ITEMS:');
       if (!analysisText) {
         throw new Error('Unexpected response format: missing analysis');
       }

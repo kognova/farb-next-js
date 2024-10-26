@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { AnalysisService, SuspiciousItem } from './analysis.service';
 import { FilesService } from '../files/files.service';
+import { AIProvider } from './types';
 
 @Controller('analysis')
 export class AnalysisController {
@@ -23,6 +24,7 @@ export class AnalysisController {
       letterText: string;
       invoiceText: string;
       amendmentText?: string;
+      provider: AIProvider;
     },
     @Session() session: any,
   ) {
@@ -31,23 +33,19 @@ export class AnalysisController {
     }
 
     try {
-      const systemPrompt = await this.filesService.getWhitePaperText();
-
-      console.log(`Received invoice text length: ${body.invoiceText.length}`);
-
       const { analysis, suspiciousItems } =
         await this.analysisService.analyzeFarb(
           body.letterText,
           body.invoiceText,
           body.amendmentText || null,
-          systemPrompt,
+          body.provider,
         );
       return { analysis, suspiciousItems };
     } catch (error) {
       console.error('Error in analyze:', error);
       throw new HttpException(
         error.message,
-        error.getStatus ? error.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR,
+        error.status ? error.status : HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
