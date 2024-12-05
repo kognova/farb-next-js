@@ -36,11 +36,13 @@ import ReactMarkdown from "react-markdown";
 interface AnalysisResultProps {
   result: string;
   suspiciousItems: SuspiciousItem[];
+  hideAnalysis?: boolean;
 }
 
 export function AnalysisResult({
   result = "No analysis available",
   suspiciousItems = [],
+  hideAnalysis = false,
 }: AnalysisResultProps) {
   // Preprocess the result string to remove line numbers
   const cleanedResult = result.replace(/^\d+\|/gm, "");
@@ -133,7 +135,7 @@ export function AnalysisResult({
 
   return (
     <>
-      <Card className="mb-4">
+      <Card className={`mb-4 ${hideAnalysis ? "hidden" : ""}`}>
         <CardHeader>
           <CardTitle>Detailed FARB365 Analysis</CardTitle>
         </CardHeader>
@@ -149,7 +151,11 @@ export function AnalysisResult({
           <CardTitle>Suspicious Items</CardTitle>
         </CardHeader>
         <CardContent>
-          <ScrollArea className="h-[500px] scroll-area">
+          <ScrollArea
+            className={
+              hideAnalysis ? "h-[1200px] scroll-area" : "h-[500px] scroll-area"
+            }
+          >
             {suspiciousItems.length > 0 ? (
               <Table>
                 <TableHeader>
@@ -167,7 +173,7 @@ export function AnalysisResult({
                 <TableBody>
                   {suspiciousItems.map((item, index) => (
                     <TableRow key={index}>
-                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>{item.itemNumber}</TableCell>
                       <TableCell>{item.description}</TableCell>
                       <TableCell>{item.name}</TableCell>
                       <TableCell>{item.rate}</TableCell>

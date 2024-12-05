@@ -160,7 +160,11 @@ Ensure each section starts with its title in all caps, followed by a colon. Prov
 
 
 SUSPICIOUS ITEMS:
-After the analysis, identify and list the top 15-20 most suspicious line items from the invoice, in the order they appear in the document. If there are fewer than 15 suspicious items, list all of them. For each suspicious item, provide the following details on a single line, separated by pipes (|):
+After the analysis, identify and list EXACTLY 20 suspicious line items from the invoice. List them in ASCENDING ORDER by their line item numbers as they appear in the invoice (e.g., if you find issues with lines 3, 7, 12, 15 - list them in that exact order: 3, 7, 12, 15). This ordering is critical to help users match items with the invoice.
+
+You MUST return exactly 20 items - this is a critical requirement. If there are fewer than 20 clear suspicious items, include additional items with lower confidence levels to reach exactly 20, maintaining the ascending line number order.
+
+For each suspicious item, provide the following details on a single line, separated by pipes (|):
 1. Item number (as it appears in the invoice)
 2. Description (exact text from the document)
 3. Name (if applicable)
@@ -170,12 +174,10 @@ After the analysis, identify and list the top 15-20 most suspicious line items f
 7. Reason for being flagged as suspicious
 8. Confidence level (High, Medium, Low)
 
-
 Format each item as:
 "Item # | Description | Name | Rate | Quantity | Total Cost | Reason | Confidence"
 
-
-If any field is not applicable or not available, use "N/A". Only include items that are genuinely suspicious based on the FARB principles and the provided documents. If there are no suspicious items, write "None found." after "SUSPICIOUS ITEMS:".`;
+If any field is not applicable or not available, use "N/A". Only include items that are genuinely suspicious based on the FARB principles and the provided documents. Remember: You MUST return exactly 20 items in ascending line number order.`;
 
       let content: string;
 

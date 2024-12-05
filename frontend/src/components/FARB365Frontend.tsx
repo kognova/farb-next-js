@@ -49,10 +49,18 @@ export default function FARB365Frontend() {
     amendment: boolean;
   }>({ letter: false, invoice: false, amendment: false });
   const [provider, setProvider] = useState<AIProvider>(AIProvider.ANTHROPIC);
+  const [isInvoiceOnly, setIsInvoiceOnly] = useState(false);
+  const [isAnalysisMinimized, setIsAnalysisMinimized] = useState(false);
 
   useEffect(() => {
     checkLoginStatus();
   }, []);
+
+  useEffect(() => {
+    if (isInvoiceOnly) {
+      setIsAnalysisMinimized(true);
+    }
+  }, [isInvoiceOnly]);
 
   const checkLoginStatus = async () => {
     try {
@@ -175,30 +183,58 @@ export default function FARB365Frontend() {
     }
   };
 
+  const handleModeSwitch = () => {
+    const newInvoiceOnly = !isInvoiceOnly;
+    setIsInvoiceOnly(newInvoiceOnly);
+    if (newInvoiceOnly) {
+      setIsAnalysisMinimized(true);
+    }
+  };
+
+  const isAnalysisDisabled = () => {
+    const baseChecks =
+      invoiceFiles.length === 0 ||
+      isLoading ||
+      isExtracting.invoice ||
+      !extractedText.invoice;
+
+    if (isInvoiceOnly) {
+      return baseChecks;
+    }
+
+    return (
+      baseChecks ||
+      letterFiles.length === 0 ||
+      isExtracting.letter ||
+      !extractedText.letter
+    );
+  };
+
   const handleAnalyze = async () => {
     setIsLoading(true);
     setProgress(0);
 
     try {
-      const response = await axios.post(
-        "/analysis",
-        {
-          letterText: extractedText.letter,
-          invoiceText: extractedText.invoice,
-          amendmentText: extractedText.amendment,
-          provider: provider, // Include the selected provider
+      const payload = {
+        invoiceText: extractedText.invoice,
+        provider: provider,
+        // ALWAYS send letterText, but use empty string if in invoice-only mode
+        letterText: isInvoiceOnly ? "" : extractedText.letter || "",
+        // Only include amendmentText if we have it and not in invoice-only mode
+        ...(!isInvoiceOnly &&
+          extractedText.amendment && {
+            amendmentText: extractedText.amendment,
+          }),
+      };
+
+      const response = await axios.post("/analysis", payload, {
+        onDownloadProgress: (progressEvent) => {
+          const totalLength = progressEvent.total;
+          if (totalLength) {
+            setProgress(Math.round((progressEvent.loaded * 100) / totalLength));
+          }
         },
-        {
-          onDownloadProgress: (progressEvent) => {
-            const totalLength = progressEvent.total;
-            if (totalLength) {
-              setProgress(
-                Math.round((progressEvent.loaded * 100) / totalLength)
-              );
-            }
-          },
-        }
-      );
+      });
 
       setAnalysisResult(response.data);
     } catch (error) {
@@ -346,19 +382,6 @@ Confidence: ${item.confidence}
     }
   };
 
-  const isAnalysisDisabled = () => {
-    return (
-      letterFiles.length === 0 ||
-      invoiceFiles.length === 0 ||
-      isLoading ||
-      isExtracting.letter ||
-      isExtracting.invoice ||
-      isExtracting.amendment ||
-      !extractedText.letter ||
-      !extractedText.invoice
-    );
-  };
-
   return (
     <div className="container mx-auto p-6 max-w-full bg-background text-foreground">
       {!isLoggedIn ? (
@@ -370,11 +393,27 @@ Confidence: ${item.confidence}
         />
       ) : (
         <>
-          <header className="mb-4">
-            <h1 className="text-3xl font-bold text-primary">
-              FARB365: Legal Invoice Transparency and Analysis
-            </h1>
-          </header>
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <h1 className="text-3xl font-bold text-primary">
+                FARB365: Legal Invoice Transparency and Analysis
+              </h1>
+              {isInvoiceOnly && (
+                <p className="text-sm text-muted-foreground mt-1">
+                  Running in invoice-only mode
+                </p>
+              )}
+            </div>
+            <Button
+              variant="outline"
+              onClick={handleModeSwitch}
+              className="ml-4"
+            >
+              {isInvoiceOnly
+                ? "Switch to Full Analysis"
+                : "Invoice Only Analysis"}
+            </Button>
+          </div>
 
           <Card className="mb-4">
             <CardHeader className="py-2">
@@ -389,28 +428,37 @@ Confidence: ${item.confidence}
               />
               <div className="flex flex-wrap gap-2">
                 {[
-                  {
-                    label: "Engagement Letter",
-                    files: letterFiles,
-                    type: "letter",
-                  },
+                  // Only show letter and amendment in full analysis mode
+                  ...(!isInvoiceOnly
+                    ? [
+                        {
+                          label: "Engagement Letter",
+                          files: letterFiles,
+                          type: "letter",
+                          required: true,
+                        },
+                        {
+                          label: "Engagement Letter Amendments",
+                          files: amendmentFiles,
+                          type: "amendment",
+                          required: false,
+                        },
+                      ]
+                    : []),
+                  // Always show invoice
                   {
                     label: "Invoice Documents",
                     files: invoiceFiles,
                     type: "invoice",
+                    required: true,
                   },
-                  {
-                    label: "Engagement Letter Amendments",
-                    files: amendmentFiles,
-                    type: "amendment",
-                  },
-                ].map(({ label, files, type }) => (
+                ].map(({ label, files, type, required }) => (
                   <div key={type} className="flex-1 min-w-[200px]">
                     <Label
                       htmlFor={`${type}Upload`}
                       className="text-sm font-medium"
                     >
-                      {label}
+                      {label} {required && "*"}
                     </Label>
                     <div className="mt-1 flex items-center space-x-2">
                       <Input
@@ -507,9 +555,24 @@ Confidence: ${item.confidence}
             <div className="w-full lg:w-1/2">
               {analysisResult && (
                 <div id="analysis-result">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-semibold">
+                      Detailed FARB365 Analysis
+                    </h2>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        setIsAnalysisMinimized(!isAnalysisMinimized)
+                      }
+                    >
+                      {isAnalysisMinimized ? "Show Analysis" : "Hide Analysis"}
+                    </Button>
+                  </div>
                   <AnalysisResult
                     result={analysisResult.analysis}
                     suspiciousItems={analysisResult.suspiciousItems}
+                    hideAnalysis={isAnalysisMinimized}
                   />
                 </div>
               )}
