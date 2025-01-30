@@ -205,7 +205,7 @@ If any field is not applicable or not available, use "N/A". Only include items t
           messages: [
             {
               role: 'system',
-              content: systemPromptContent,
+              content: systemPromptContent + "\n\nIMPORTANT: Your response MUST include a section titled 'SUSPICIOUS ITEMS:' at the end.",
             },
             {
               role: 'user',
