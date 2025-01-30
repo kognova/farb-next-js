@@ -201,14 +201,19 @@ If any field is not applicable or not available, use "N/A". Only include items t
         );
       } else if (provider === AIProvider.OPENAI) {
         const response = await this.openai.chat.completions.create({
-          model: 'o1-preview',
+          model: 'o1',
           messages: [
             {
-              role: 'user',
-              content: `${systemPromptContent}\n\n${userPromptContent}`,
+              role: 'system',
+              content: systemPromptContent,
             },
-          ],
+            {
+              role: 'user',
+              content: userPromptContent,
+            }
+          ]
         });
+        
         console.log('OpenAI API Response:', JSON.stringify(response, null, 2));
         content = response.choices[0]?.message?.content;
         if (!content) {
