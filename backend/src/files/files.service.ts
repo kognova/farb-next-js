@@ -16,7 +16,7 @@ export class FilesService {
     this.llamaParser = new LlamaParseReader({
       apiKey: process.env.LLAMA_CLOUD_API_KEY,
       resultType: 'markdown',
-      premiumMode: true,
+      premiumMode: false,
       parsingInstruction: `The provided document is an invoice for legal services. Each page contains detailed billing information, including services rendered, identification of the resource performing the services, hourly rates, time spent, and amounts due.
    - Extract each line item, including the ** legal resource**, **service description**, **rate**, **quantity (hours)**, and **line total**.
    - Capture the **invoice number**, **issue date**, **due date**, and **client information** from the header section.
